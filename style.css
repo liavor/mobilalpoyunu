@@ -1,0 +1,357 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a2e;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+#game {
+    position: relative;
+    width: 800px;
+    height: 400px;
+    background: url('background.png') repeat-x;
+    background-size: cover;
+    overflow: hidden;
+    border: 3px solid #0ff;
+    filter: brightness(0.8) contrast(1.1);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+}
+
+#rainCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 6;
+}
+
+#ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to top, #333, #444);
+    z-index: 1;
+}
+
+#player {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    bottom: 20px;
+    background: url('player.png') no-repeat center / contain;
+    z-index: 2;
+    transition: transform 0.1s ease-out;
+}
+
+#player.running {
+    animation: playerRun 0.3s steps(2) infinite;
+}
+
+#player.hit {
+    animation: playerFlash 0.1s 2;
+}
+
+@keyframes playerRun {
+    0% { background-image: url('player_run_1.png'); }
+    50% { background-image: url('player_run_2.png'); }
+    100% { background-image: url('player_run_1.png'); }
+}
+
+@keyframes playerFlash {
+    0% { filter: brightness(1.5) contrast(2); }
+    100% { filter: none; }
+}
+
+.health-bar {
+    position: absolute;
+    width: 64px;
+    height: 5px;
+    background: linear-gradient(to right, #f00, #a00);
+    top: -10px;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    transition: width 0.1s ease-out;
+}
+
+.enemy {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    bottom: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 2;
+}
+.enemy.hit { animation: enemyFlash 0.1s 2; }
+.enemy-health {
+    position: absolute;
+    width: 64px;
+    height: 5px;
+    background: linear-gradient(to right, #f00, #a00);
+    top: -10px;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    transition: width 0.1s ease-out;
+}
+
+.bullet, .enemy-bullet {
+    position: absolute;
+    width: 10px;
+    height: 4px;
+    z-index: 3;
+    border-radius: 2px;
+}
+.bullet { background: #7F7FFF; box-shadow: 0 0 8px #ff0; }
+.enemy-bullet { background: #f00; box-shadow: 0 0 8px #f00; }
+
+.pizza-box {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background: url('pizza.png') no-repeat center / contain;
+    z-index: 2;
+}
+.stinky-pizza {
+    filter: hue-rotate(120deg) saturate(2) brightness(0.8);
+    animation: stinkWobble 0.5s infinite linear;
+}
+@keyframes stinkWobble {
+    0%, 100% { transform: rotate(0deg) translateX(0); }
+    25% { transform: rotate(-3deg) translateX(-1px); }
+    50% { transform: rotate(0deg) translateX(1px); }
+    75% { transform: rotate(3deg) translateX(-1px); }
+}
+
+#game-ui-top-right {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    z-index: 4;
+}
+#weapon-icon { width: 35px; height: 35px; margin-right: 10px; }
+#scoreboard {
+    position: static;
+    color: #39ff14;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 0 0 8px #39ff14, 0 0 15px rgba(57, 255, 20, 0.7);
+    letter-spacing: 1px;
+}
+
+#message {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px; font-weight: bold; color: #fff;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 30px 40px; border-radius: 15px;
+    display: none; z-index: 7; text-align: center;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+#neon-lights { position: absolute; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.neon-glow {
+    position: absolute; width: 120px; height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 0, 255, 0.4), transparent 70%);
+    animation: pulse 2.5s infinite alternate;
+    opacity: 0.6;
+}
+.neon-glow:nth-child(2) { background: radial-gradient(circle, rgba(0, 255, 255, 0.4), transparent 70%); animation-delay: 0.8s; }
+.neon-glow:nth-child(3) { background: radial-gradient(circle, rgba(255, 255, 0, 0.4), transparent 70%); animation-delay: 1.6s; }
+@keyframes pulse { 0% { transform: scale(0.9); opacity: 0.6; } 100% { transform: scale(1.1); opacity: 0.9; } }
+
+#restartButton {
+    position: absolute; top: calc(50% + 100px); left: 50%;
+    transform: translate(-50%, -50%); padding: 12px 30px; font-size: 24px;
+    background-color: #8a2be2; color: #fff; border: none; border-radius: 10px;
+    cursor: pointer; z-index: 10; box-shadow: 0 0 15px rgba(138, 43, 226, 0.8);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase; letter-spacing: 1.5px;
+}
+#restartButton:hover { background-color: #6a1aab; box-shadow: 0 0 25px rgba(138, 43, 226, 1); transform: translate(-50%, -50%) scale(1.05); }
+#restartButton:active { transform: translate(-50%, -50%) scale(0.98); }
+
+#start-screen {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); display: flex; flex-direction: column;
+    justify-content: center; align-items: center; z-index: 100;
+    color: #fff; font-size: 36px; text-align: center; text-shadow: 0 0 10px #f0f;
+}
+#start-screen h1 { color: #0ff; text-shadow: 0 0 15px #0ff, 0 0 25px rgba(0, 255, 255, 0.7); margin-bottom: 30px; font-size: 48px; }
+#start-button {
+    padding: 15px 40px; font-size: 28px; background-color: #8a2be2; color: white;
+    border: none; border-radius: 10px; cursor: pointer;
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.7);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase; letter-spacing: 2px;
+}
+#start-button:hover { background-color: #6a1aab; box-shadow: 0 0 30px rgba(138, 43, 226, 1); transform: scale(1.05); }
+#start-button:active { transform: scale(0.98); }
+
+.explosion { position: absolute; width: 64px; height: 64px; background: url('explosion.gif') no-repeat center / contain; animation: explode 0.5s forwards; z-index: 4; pointer-events: none; }
+@keyframes explode { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+
+.particle { position: absolute; width: 4px; height: 4px; background-color: rgba(255, 255, 255, 0.5); border-radius: 50%; animation: fadeOut 0.5s forwards; z-index: 1; pointer-events: none; }
+/* opacity:0; dan opacity:1; e de i tirildi fadeOut'un ba lang c  i in, ama particle create edilirken opacity:0 verilirse daha iyi*/
+@keyframes fadeOut { 0% {opacity: 1; transform: translateY(0);} 100% { opacity: 0; transform: translateY(10px); } }
+
+
+#boss { position: absolute; width: 96px; height: 96px; bottom: 20px; background: url('diaz.png') no-repeat center / contain; z-index: 3; transition: transform 0.1s ease-out; }
+#boss.hit { animation: bossFlash 0.1s 2; }
+@keyframes bossFlash { 0% { filter: brightness(1.5) contrast(2); } 100% { filter: none; } }
+.boss-health { position: absolute; width: 96px; height: 8px; background: linear-gradient(to right, #0f0, #0a0); top: -12px; border-radius: 4px; box-shadow: 0 0 5px rgba(0, 255, 0, 0.5); transition: width 0.1s ease-out; }
+
+.bomb { position: absolute; width: 32px; height: 32px; background: url('bomb.png') no-repeat center / contain; z-index: 3; transition: transform 0.1s ease-out; }
+.bomb.exploding { animation: bombExplode 0.5s forwards; }
+@keyframes bombExplode { 0% { transform: scale(1); opacity: 1; background-image: url('bomb.png'); } 50% { transform: scale(2); opacity: 0.8; background-image: url('explosion.gif'); } 100% { transform: scale(0); opacity: 0; background-image: url('explosion.gif'); } }
+
+/* Oyuncu Bombas  */
+.player-bomb {
+    /* .bomb ile ayn  olabilir veya farkl  bir g rsel/stil alabilir */
+    background-image: url('player_bomb.png'); /* player_bomb.png g rseli gerekli */
+}
+
+
+/* Power-up Stilleri */
+.power-up {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    z-index: 2;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.double-shot-powerup { background-image: url('double_shot_powerup.png'); }
+/* .machine-gun-powerup { background-image: url('machine_gun_powerup.png'); } */ /* Sonraki ad m i in */
+
+
+/* Ulti G rsel Efekti */
+#ultimate-visual-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 100, 0); /* Ba lang  ta g r nmez sar ms  fla  */
+    z-index: 200; /* Her  eyin  zerinde */
+    pointer-events: none;
+    opacity: 0;
+}
+#ultimate-visual-effect.active {
+    animation: ultimateFlash 0.6s ease-out;
+}
+@keyframes ultimateFlash {
+    0% { opacity: 0; background-color: rgba(70, 130, 180, 0); } /* Steelblue,  im ek gibi */
+    20% { opacity: 0.7; background-color: rgba(173, 216, 230, 0.7); } /* Lightblue */
+    40% { opacity: 0.3; background-color: rgba(70, 130, 180, 0.3); }
+    60% { opacity: 0.8; background-color: rgba(220, 220, 250, 0.8); } /* Lavanta beyaz  */
+    100% { opacity: 0; background-color: rgba(255, 255, 100, 0); }
+}
+
+#game.screen-shake {
+    animation: screenShake 0.3s linear;
+}
+@keyframes screenShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+/* ========================================= */
+/* BASİT MOBİL KONTROLLER STİLLERİ */
+/* ========================================= */
+#mobile-controls {
+    position: absolute;
+    bottom: 5px; /* Oyun alanının hemen üzerinde */
+    left: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 10;
+    pointer-events: none; /* Varsayılan olarak tıklamaları geçsin, butonlar pointer-events: auto ile bu kuralı geçecek */
+    display: none; /* Varsayılan olarak gizli, media query ile açılacak */
+}
+
+/* 800px ve altındaki ekranlarda (mobil) kontrol düğmelerini göster */
+@media (max-width: 800px) {
+    #mobile-controls {
+        display: block;
+    }
+}
+
+.control-btn {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #0ff;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #0ff;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+    transition: transform 0.1s, background-color 0.1s;
+    user-select: none;
+    pointer-events: auto; /* Tıklamaları yakala */
+    touch-action: manipulation; /* Dokunmatik gecikmeyi azalt */
+}
+
+.control-btn:active {
+    background-color: rgba(0, 255, 255, 0.7);
+    transform: scale(0.95);
+    box-shadow: 0 0 5px rgba(0, 255, 255, 1);
+}
+
+/* Yön Kontrolleri - Sol Alt Köşe */
+#btn-left {
+    left: 20px;
+    bottom: 0;
+}
+#btn-right {
+    left: 100px;
+    bottom: 0;
+}
+
+/* Aksiyon Kontrolleri - Sağ Alt Köşe */
+#btn-ultimate {
+    right: 20px;
+    bottom: 0;
+    background-color: rgba(255, 0, 0, 0.5); /* Kırmızı */
+    border-color: #f00;
+    color: #f00;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+}
+
+#btn-bomb {
+    right: 100px;
+    bottom: 0;
+    background-color: rgba(255, 140, 0, 0.5); /* Turuncu */
+    border-color: #ff8c00;
+    color: #ff8c00;
+    font-size: 16px;
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
+}
+
+#btn-shoot {
+    right: 180px;
+    bottom: 0;
+    font-size: 16px;
+}
+
+#btn-jump {
+    right: 260px;
+    bottom: 0;
+    font-size: 16px;
+}

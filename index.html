@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Lord of the Rings: Saga of Alpış</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="start-screen">
+        <h1>LotR: Saga of Alpış</h1>
+        <button id="start-button">OYUNA BAŞLA</button>
+    </div>
+
+    <div id="game">
+        <div id="neon-lights">
+            <div class="neon-glow" style="top:50px; left:100px;"></div>
+            <div class="neon-glow" style="top:120px; left:300px;"></div>
+            <div class="neon-glow" style="top:80px; left:600px;"></div>
+        </div>
+
+        <div id="game-ui-top-right">
+            <img id="weapon-icon" src="pistol.png" alt="Silah">
+            <div id="scoreboard">$0</div>
+            <div id="bomb-ui" style="margin-left: 20px; display: flex; align-items: center;">
+                <img id="bomb-icon" src="bomb.png" alt="Bomba" style="width: 30px; height: 30px; margin-right: 5px;">
+                <span id="bomb-count" style="font-size: 20px; font-weight: bold; color: #ff8c00; text-shadow: 0 0 5px #ff8c00;">X3</span>
+                <div id="bomb-cooldown-bar" style="width: 50px; height: 5px; background-color: rgba(255, 255, 255, 0.3); margin-left: 5px; border-radius: 3px; overflow: hidden;">
+                    <div id="bomb-cooldown-progress" style="width: 0%; height: 100%; background-color: #ff8c00; transition: width 0.1s linear;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="player">
+            <div class="health-bar" id="player-health"></div>
+        </div>
+        
+        <div id="ground"></div>
+        
+        <div id="bullets"></div>
+        <div id="enemy-bullets"></div>
+        <div id="player-bombs-container"></div>
+        <div id="enemies"></div>
+        <div id="pizzas"></div>
+        <div id="powerups-container"></div>
+        <div id="message"></div>
+        <div id="ultimate-visual-effect"></div>
+    </div>
+
+    <audio id="gameMusic" loop>
+        <source src="music.m4a" type="audio/mp4">
+        Tarayıcınız ses etiketini desteklemiyor.
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
