@@ -1008,6 +1008,87 @@ startButton.addEventListener('click', () => {
     gameMusic.play().catch(e => console.log("Müzik çalma hatası:", e)); // Otomatik oynatma hatasını yakala
 });
 
+// --- MOBİL KONTROLLER BAŞLANGICI ---
+
+// HTML element referanslarını al
+const btnLeft = document.getElementById("btn-left");
+const btnRight = document.getElementById("btn-right");
+const btnJump = document.getElementById("btn-jump");
+const btnShoot = document.getElementById("btn-shoot");
+const btnBomb = document.getElementById("btn-bomb");
+const btnUltimate = document.getElementById("btn-ultimate");
+
+// Tuş eşleştirmeleri (Mevcut klavye tuşlarına karşılık gelir)
+const controlMappings = {
+    "btn-left": "a",
+    "btn-right": "d",
+    "btn-jump": " ", // Zıplama
+    "btn-shoot": "j", // Ateş etme
+    "btn-bomb": "k",  // Bomba atma
+    "btn-ultimate": "l" // Ulti kullanma
+};
+
+/**
+ * Kontrol butonlarına basıldığında veya bırakıldığında klavye olaylarını simüle eder.
+ * @param {string} keyName - Simüle edilecek tuşun adı (keys objesindeki karşılığı).
+ * @param {boolean} isPressed - Tuşun basılıp basılmadığı.
+ */
+function handleControlInput(keyName, isPressed) {
+    if (isPressed) {
+        keys[keyName] = true;
+        
+        // Ateş (J), Bomba (K) ve Ulti (L) için anlık aksiyonu tetikle
+        if (keyName === 'j') {
+            // jKeyHeld kontrolü sayesinde tek basışta bir kere ateş edilir
+            if (!jKeyHeld) { 
+                 jKeyHeld = true; 
+                 shootBullet(); // Mevcut ateş fonksiyonunuzu çağırır
+            }
+        } else if (keyName === 'k') {
+             // Bomba atma fonksiyonu (Varsayılır ki tanımlı)
+            if (playerBombCount > 0) { // Bomba sayısını kontrol et
+                 throwPlayerBomb(); 
+            }
+        } else if (keyName === 'l') {
+             // Ulti kullanma fonksiyonu (Varsayılır ki tanımlı)
+            useUltimate(); 
+        }
+
+    } else {
+        // Tuş bırakıldığında keys nesnesinden sil
+        delete keys[keyName];
+        if (keyName === 'j') jKeyHeld = false; // Ateş tuşunu bırakıldı olarak işaretle
+    }
+}
+
+// Tüm butonlara mouse ve dokunmatik olay dinleyicilerini ekle
+[btnLeft, btnRight, btnJump, btnShoot, btnBomb, btnUltimate].forEach(button => {
+    if (!button) return; // Buton HTML'de yoksa atla
+    const keyName = controlMappings[button.id];
+
+    // Basma olayları (mousedown ve touchstart)
+    const pressHandler = (e) => {
+        e.preventDefault(); // Gecikmeleri ve varsayılan davranışı (kaydırma vb.) engelle
+        handleControlInput(keyName, true);
+    };
+
+    // Bırakma olayları (mouseup ve touchend/touchcancel)
+    const releaseHandler = (e) => {
+        e.preventDefault();
+        handleControlInput(keyName, false);
+    };
+
+    button.addEventListener('mousedown', pressHandler);
+    button.addEventListener('touchstart', pressHandler, { passive: false });
+
+    button.addEventListener('mouseup', releaseHandler);
+    button.addEventListener('touchend', releaseHandler, { passive: false });
+    button.addEventListener('touchcancel', releaseHandler, { passive: false });
+});
+
+// --- MOBİL KONTROLLER SONU ---
+
+
 // --- Oyun Döngüsü ---
 
 /**
@@ -1223,83 +1304,3 @@ document.addEventListener('DOMContentLoaded', () => {
     if (startScreen) startScreen.style.display = 'flex';
     console.log("DOM içeriği yüklendi.");
 });
-
-// --- MOBİL KONTROLLER BAŞLANGICI ---
-
-// HTML element referanslarını al
-const btnLeft = document.getElementById("btn-left");
-const btnRight = document.getElementById("btn-right");
-const btnJump = document.getElementById("btn-jump");
-const btnShoot = document.getElementById("btn-shoot");
-const btnBomb = document.getElementById("btn-bomb");
-const btnUltimate = document.getElementById("btn-ultimate");
-
-// Tuş eşleştirmeleri (Mevcut klavye tuşlarına karşılık gelir)
-const controlMappings = {
-    "btn-left": "a",
-    "btn-right": "d",
-    "btn-jump": " ", // Zıplama
-    "btn-shoot": "j", // Ateş etme
-    "btn-bomb": "k",  // Bomba atma
-    "btn-ultimate": "l" // Ulti kullanma
-};
-
-/**
- * Kontrol butonlarına basıldığında veya bırakıldığında klavye olaylarını simüle eder.
- * @param {string} keyName - Simüle edilecek tuşun adı (keys objesindeki karşılığı).
- * @param {boolean} isPressed - Tuşun basılıp basılmadığı.
- */
-function handleControlInput(keyName, isPressed) {
-    if (isPressed) {
-        keys[keyName] = true;
-        
-        // Ateş (J), Bomba (K) ve Ulti (L) için anlık aksiyonu tetikle
-        if (keyName === 'j') {
-            // jKeyHeld kontrolü sayesinde tek basışta bir kere ateş edilir
-            if (!jKeyHeld) { 
-                 jKeyHeld = true; 
-                 shootBullet(); // Mevcut ateş fonksiyonunuzu çağırır
-            }
-        } else if (keyName === 'k') {
-             // Bomba atma fonksiyonu (Varsayılır ki tanımlı)
-            if (playerBombCount > 0) { // Bomba sayısını kontrol et
-                 throwPlayerBomb(); 
-            }
-        } else if (keyName === 'l') {
-             // Ulti kullanma fonksiyonu (Varsayılır ki tanımlı)
-            useUltimate(); 
-        }
-
-    } else {
-        // Tuş bırakıldığında keys nesnesinden sil
-        delete keys[keyName];
-        if (keyName === 'j') jKeyHeld = false; // Ateş tuşunu bırakıldı olarak işaretle
-    }
-}
-
-// Tüm butonlara mouse ve dokunmatik olay dinleyicilerini ekle
-[btnLeft, btnRight, btnJump, btnShoot, btnBomb, btnUltimate].forEach(button => {
-    if (!button) return; // Buton HTML'de yoksa atla
-    const keyName = controlMappings[button.id];
-
-    // Basma olayları (mousedown ve touchstart)
-    const pressHandler = (e) => {
-        e.preventDefault(); // Gecikmeleri ve varsayılan davranışı (kaydırma vb.) engelle
-        handleControlInput(keyName, true);
-    };
-
-    // Bırakma olayları (mouseup ve touchend/touchcancel)
-    const releaseHandler = (e) => {
-        e.preventDefault();
-        handleControlInput(keyName, false);
-    };
-
-    button.addEventListener('mousedown', pressHandler);
-    button.addEventListener('touchstart', pressHandler, { passive: false });
-
-    button.addEventListener('mouseup', releaseHandler);
-    button.addEventListener('touchend', releaseHandler, { passive: false });
-    button.addEventListener('touchcancel', releaseHandler, { passive: false });
-});
-
-// --- MOBİL KONTROLLER SONU ---
