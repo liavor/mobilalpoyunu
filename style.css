@@ -313,33 +313,37 @@ body {
     transform: scale(0.95);
     box-shadow: 0 0 5px rgba(0, 255, 255, 1);
 }
+/* Sadece 768px genişliğinden küçük ekranlar (çoğu telefon dikey modu) için uygulansın */
+@media (max-width: 768px) {
+    /* Yön Kontrolleri - Sol Alt Köşe */
+    #btn-left {
+        left: 20px;
+        bottom: 20px; /* Alttan biraz yukarı çekildi */
+    }
+    #btn-right {
+        left: 110px; /* Sol tuşun yanına alındı (70px tuş + 20px aralık) */
+        bottom: 20px; /* Alttan biraz yukarı çekildi */
+    }
 
-/* Yön Kontrolleri - Sol Alt Köşe */
-#btn-left {
-    left: 20px;
-    bottom: 20px; /* Alttan biraz yukarı çekildi */
-}
-#btn-right {
-    left: 100px; /* Sol tuşun hemen yanına alındı */
-    bottom: 20px; /* Alttan biraz yukarı çekildi */
-}
+    /* Aksiyon Kontrolleri - Sağ Köşe */
+    #btn-shoot {
+        right: 20px;
+        bottom: 20px; /* En alt sağ köşe */
+    }
 
-/* Aksiyon Kontrolleri - Sağ Köşe */
-#btn-jump {
-    right: 20px;
-    bottom: 120px; /* Sağ üst kısma yaklaştırıldı */
-    /* Zıplama tuşunu en yukarıda tutarak kazara basmayı azaltalım */
-}
-#btn-shoot {
-    right: 20px;
-    bottom: 20px; /* En alt sağ köşe */
-}
-#btn-bomb {
-    right: 100px; /* Ateş tuşunun soluna alındı */
-    bottom: 20px;
-}
-#btn-ultimate {
-    right: 100px; /* Ateş tuşunun soluna alındı */
-    bottom: 120px; /* Zıplama tuşunun altına alındı */
-    /* Ultimate ve Zıplama aynı hizada olabilir */
+    /* Zıplama tuşu Ateş tuşunun üstüne konumlandırıldı */
+    #btn-jump {
+        right: 20px;
+        bottom: 110px; /* Ateş tuşunun hemen üstü (70px tuş + 20px aralık) */
+    }
+    
+    /* Diğer aksiyon tuşları (Bomba, Ultimate) sağdan biraz daha içeri alındı */
+    #btn-bomb {
+        right: 110px; /* Ateş tuşunun soluna alındı */
+        bottom: 20px;
+    }
+    #btn-ultimate {
+        right: 110px; /* Zıplama tuşunun soluna alındı */
+        bottom: 110px;
+    }
 }
